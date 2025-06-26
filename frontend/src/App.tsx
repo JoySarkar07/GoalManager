@@ -55,7 +55,10 @@ const App:React.FC = () => {
         <div className="h-8 w-8 invert cursor-pointer md:hidden" onClick={ toggleViewPort }>
           <img src={ hamIcon } alt="hamIcon" />
         </div>
-        <h3 className="flex-5/6 text-3xl">goal App</h3>
+        <div className="flex-5/6 flex gap-2 justify-center items-center">
+          <img src="/goal.svg" alt="goalLogo" className="h-7 w-7"/>
+          <h3 className="text-3xl">Goal App</h3>
+        </div>
         <div>
           <img className="h-10 w-10 bg-gray-400 p-2 rounded-4xl cursor-pointer" src={userIcon} alt="userIcon" onClick={ ()=>setOpenMenu( prev=>!prev ) }/>
           {loggedIn && <p className="absolute right-17 top-7 font-bold">{user.current?.name.split(" ")[0]}</p>}
