@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+*{
+  color: #ffff;
+}
+
+body{
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+.body-style{
+  @apply  rounded-2xl inset-shadow-sm inset-shadow-indigo-500 m-2;
+}

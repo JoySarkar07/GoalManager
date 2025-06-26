@@ -1,0 +1,151 @@
+import { getToken } from "../auth/userAuth";
+
+export const deleteGoal = async (groupId: string): Promise<any> => {
+    const url = `http://localhost:3000/api/v1/goals/${groupId}`;
+    try {
+        const res = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${ getToken() }`
+            },
+        });
+        const updatedGoal = await res.json();
+        return updatedGoal;
+    } catch (e: any) {
+        return e.message;
+    }
+}
+
+export const updateGoal = async (groupId: string, data:any): Promise<any> => {
+    const url = `http://localhost:3000/api/v1/goals/${ groupId }`;
+    try {
+        const res = await fetch(url, {
+            method: 'PATCH',
+            headers:{ 
+                'Content-Type': 'application/json',
+                'Authorization' : `Bearer ${ getToken() }`
+            },
+            body: JSON.stringify(data)
+        });
+        const updatedGoal = await res.json();
+        return updatedGoal;
+    } catch (e: any) {
+        return e.message;
+    }
+}
+
+
+export const getGoal = async (filters:any): Promise<any> => {
+    let url = `http://localhost:3000/api/v1/goals`;
+    if (filters) {
+        const queryString = new URLSearchParams(filters).toString();
+        url += `?${queryString}`;
+    }
+    try {
+        const res = await fetch(url,{
+            method:'GET',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${ getToken() }`
+            },
+        });
+        const goals = await res.json();
+        return goals;
+    } catch (e: any) {
+        return e.message;
+    }
+}
+
+export const createGoal = async ( data:any ): Promise<any> => {
+    const url = `http://localhost:3000/api/v1/goals`;
+    try {
+        const res = await fetch(url,{
+            method:'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${ getToken() }`
+            },
+            body: JSON.stringify(data)
+        });
+        const goals = await res.json();
+        return goals;
+    } catch (e: any) {
+        return e.message;
+    }
+}
+
+export const getWorks = async ( gaolId:string, filters:any ): Promise<any> => {
+    let url = `http://localhost:3000/api/v1/goals/${ gaolId }/work`;
+    if(filters){
+        const queryString = new URLSearchParams( filters ).toString();
+        url += `?${queryString}`;
+    }
+    console.log({url});
+    try {
+        const res = await fetch(url,{
+            method:'GET',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${ getToken() }`
+            },
+        });
+        const goals = await res.json();
+        return goals;
+    } catch (e: any) {
+        return e.message;
+    }
+}
+
+
+export const createWork = async ( goalId:string, data:any ): Promise<any> => {
+    const url = `http://localhost:3000/api/v1/goals/${ goalId }/work`;
+    try {
+        const res = await fetch(url,{
+            method:'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${ getToken() }`
+            },
+            body: JSON.stringify( data )
+        });
+        const createdWork = await res.json();
+        return createdWork;
+    } catch (e: any) {
+        return e.message;
+    }
+}
+
+
+export const updateWork = async (groupId: string, workId:string, data:any): Promise<any> => {
+    const url = `http://localhost:3000/api/v1/goals/${ groupId }/work/${ workId }`;
+    try {
+        const res = await fetch(url, {
+            method: 'PATCH',
+            headers:{ 
+                'Content-Type': 'application/json',
+                'Authorization' : `Bearer ${ getToken() }`
+            },
+            body: JSON.stringify( data )
+        });
+        const updatedWork = await res.json();
+        return updatedWork;
+    } catch (e: any) {
+        return e.message;
+    }
+}
+
+export const deleteWork = async (groupId: string, workId:string): Promise<any> => {
+    const url = `http://localhost:3000/api/v1/goals/${ groupId }/work/${ workId }`;
+    try {
+        const res = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${ getToken() }`
+            },
+        });
+        const deletedWork = await res.json();
+        return deletedWork;
+    } catch (e: any) {
+        return e.message;
+    }
+}
