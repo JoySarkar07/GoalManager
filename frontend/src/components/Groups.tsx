@@ -37,11 +37,13 @@ const Groups:React.FC<GroupsProps> = ({
     }
 
     const handleDeleteGoal = async ()=>{
-        const data = await deleteGoal(goalData._id);
-        if(data?.status === 'Ok'){
-            setGoalChanged(prev=>!prev);
+        if(confirm("Are you sure you want to delete this? Once deleted, it can’t be recovered.")){
+            const data = await deleteGoal(goalData._id);
+            if(data?.status === 'Ok'){
+                setGoalChanged(prev=>!prev);
+            }
         }
-      }
+    }
 
   return (
     <div>

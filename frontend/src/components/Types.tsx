@@ -24,3 +24,15 @@ export type sideBarGoalType = {
     isGroup: boolean,
     subGoals: sideBarGoalType[],
 }
+
+export type User = {
+    email: string,
+    exp?: string, 
+    iat?: string,
+    id: string,
+    name: string,
+    notificationPreferences ?:{
+        email?: boolean,
+        push?: boolean,
+    }
+}

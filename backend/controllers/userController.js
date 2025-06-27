@@ -83,10 +83,23 @@ const deleteUser = async (req, res)=>{
     }
 }
 
+const saveSubscription = async (req, res)=>{
+    try{
+        const userId = req.user.id;
+        const data = req.body;
+        const subscriptionData = await userService.saveSubscription(userId, data);
+        res.status(subscriptionData.code).send({ status : subscriptionData.status, message: subscriptionData.message });
+    }
+    catch(e){
+        res.status(500).send({status : 'Error', message: 'Failed to subscribe user', error: e.message});
+    }
+}
+
 // Export functions
 module.exports = {
     login,
     signup,
     updateUser,
-    deleteUser
+    deleteUser,
+    saveSubscription
 }

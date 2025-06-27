@@ -1,11 +1,13 @@
 import { jwtDecode } from 'jwt-decode';
 import Cookies from 'js-cookie';
+import type { User } from "../components/Types";
+
 
 const decodeToken=()=>{
     const token = Cookies.get('authToken');
     if(!token) return null;
     try{
-        return jwtDecode(token);
+        return jwtDecode(token) as User;
     }
     catch(e){
         return null;

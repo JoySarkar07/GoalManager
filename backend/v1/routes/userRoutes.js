@@ -24,5 +24,7 @@ router.patch('/', authenticateUser, userController.updateUser);
 // this route is used for delete functionality
 router.delete('/', authenticateUser, userController.deleteUser);
 
+router.post('/save-subscription', authenticateUser, userController.saveSubscription);
+
 // exports the router
 module.exports = router;

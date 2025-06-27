@@ -1,50 +1,47 @@
-import React, { useState } from 'react';
-import Button from './Button';
-import InputPanel from './InputPanel';
+import React, { useState } from 'react'
+import InputPanel from './InputPanel'
+import Button from './Button'
+import type { User } from './Types'
 
-type SignUpProps = {
-    setOpenPage : React.Dispatch<React.SetStateAction<string | null>>
+type SettingProps = {
+    setOpenPage : React.Dispatch<React.SetStateAction<string | null>>,
+    user: User,
 }
 
-const SignUp: React.FC<SignUpProps> = ({
-    setOpenPage
+const Settings: React.FC<SettingProps> = ({
+    setOpenPage,
+    user
 }) => {
-    const fields = [{title:'Name', placeHolder:'Enter your name', type:'text'}, {title:'Email', placeHolder:'Enter your email', type:'email'}, {title:'Password', placeHolder:'Enter your password', type:'password'}, {title:'Confirm Password', placeHolder:'Enter your password again', type:'password'}];
+    const fields = [{title:'Name', placeHolder:'Enter your name', type:'text'}, {title:'Email', placeHolder:'Enter your email', type:'email'}];
     const [formData, setFormData] = useState({
-        name:"",
-        email:"",
-        password:"",
-        confirmPassword:"",
-        emailNotification: true,
-        webNotification:false,
+        name: user.name,
+        email: user.email,
+        emailNotification: user.notificationPreferences?.email,
+        webNotification: user.notificationPreferences?.push,
     })
     const onFormSubmit = ()=>{
-        if(formData.name==="" || formData.email==="" || formData.password==="" || formData.confirmPassword===""){
+        if(formData.name==="" || formData.email==="" ){
             console.log("Some fields are empty");
-            return;
-        }
-        if(formData.password !== formData.confirmPassword){
-            console.log("Password and confirm password must be same");
             return;
         }
         if( ! formData.email.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)){
             console.log("Invalid Email");
             return;
         }
-        const url = 'http://localhost:3000/api/v1/user/signup'
-        fetch(url,{
-            method:'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({name:formData.name, email:formData.email, password:formData.password, emailPreference: formData.emailNotification, pushPreference: formData.webNotification})
-        })
-        .then(res=>{
-            return res.json();
-        })
-        .then(data=>{
-            console.log(data);
-            onFormReset();
-            setOpenPage(null);
-        })
+        // const url = 'http://localhost:3000/api/v1/user/signup'
+        // fetch(url,{
+        //     method:'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify({name:formData.name, email:formData.email, emailPreference: formData.emailNotification, pushPreference: formData.webNotification})
+        // })
+        // .then(res=>{
+        //     return res.json();
+        // })
+        // .then(data=>{
+        //     console.log(data);
+        //     onFormReset();
+        //     setOpenPage(null);
+        // })
     }
 
     const onCancel = ()=>{
@@ -54,12 +51,10 @@ const SignUp: React.FC<SignUpProps> = ({
     const onFormReset = ()=>{
         setFormData(
             {
-                name:"",
-                email:"",
-                password:"",
-                confirmPassword:"",
-                emailNotification: true,
-                webNotification:false,
+                name: user.name,
+                email: user.email,
+                emailNotification: user.notificationPreferences?.email,
+                webNotification: user.notificationPreferences?.push,
             }
         )
     }
@@ -75,13 +70,14 @@ const SignUp: React.FC<SignUpProps> = ({
         } else if (title) {
             setFormData(prev => ({
                 ...prev,
-                [title==='Confirm Password'?'confirmPassword':title.toLowerCase()]: value
+                [title.toLowerCase()]: value
             }));
         }
     }
+
   return (
-      <InputPanel
-        panelTitle='SignUp'
+    <InputPanel
+        panelTitle='Settings'
         onCancel={onCancel}
         inputFields={fields}
         handleInput={handleInput}
@@ -107,7 +103,7 @@ const SignUp: React.FC<SignUpProps> = ({
                     </div>
                 </div>
                 <div className='flex justify-center items-center gap-5'>
-                    <Button title='SignUp' onClick={ onFormSubmit } bgClasses='text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2'/>
+                    <Button title='Update' onClick={ onFormSubmit } bgClasses='text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2'/>
                     <Button title='Reset' onClick={ onFormReset } bgClasses='text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2'/>
                 </div>
             </>
@@ -116,4 +112,4 @@ const SignUp: React.FC<SignUpProps> = ({
   )
 }
 
-export default SignUp
+export default Settings

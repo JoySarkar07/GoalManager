@@ -33,9 +33,9 @@ const InputPanel: React.FC<InputPanelProps> = ({
         {
             inputFields.map((item, ind)=>{
                 return (
-                    <div key={ind} className='flex m-1 p-2 justify-center items-center'>
-                        <label htmlFor={item.title.toLowerCase()} className='flex-1/4'>{item.title}<span className='text-red-500'>*</span></label>
-                        <input type={item.type} name={item.title.toLowerCase()} id={item.title.toLowerCase()} placeholder={item.placeHolder} className='flex-3/4 p-2 text-md rounded-2xl bg-gray-600' onChange={(e)=>handleInput(e, item.title)} value={formData[item.title.toLowerCase()]}/>
+                    <div key={ ind } className='flex m-1 p-2 justify-center items-center'>
+                        <label htmlFor={ item.title.split(" ").join("").toLowerCase() } className='flex-1/4'>{ item.title }<span className='text-red-500'>*</span></label>
+                        <input type={ item.type } name={ item.title.split(" ").join("").toLowerCase() } id={ item.title.split(" ").join("").toLowerCase() } placeholder={ item.placeHolder } className='flex-3/4 p-2 text-md rounded-2xl bg-gray-600' onChange={ (e)=>handleInput(e, item.title) } value={ formData[ item.title.split(" ")[0].toLowerCase() + ( item.title.split(" ")[1] || '' ) ] }/>
                     </div>
                 );
             })

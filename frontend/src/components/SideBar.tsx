@@ -52,10 +52,12 @@ const SideBar:React.FC<SideBarProps> = ({
   }
 
   useEffect(() => {
-    if( ! loggedIn) return;
-    console.log("run....");
+    if( ! loggedIn){
+      setGoals([]);
+      return;
+    };
     fetchGoals( filters );
-  }, [goalChanged, goalEdited, filters])
+  }, [goalChanged, goalEdited, filters, loggedIn])
   
   return (
     <div className={`${ openSideBar?'absolute z-10 bg-gray-700 h-[87%]':'hidden' } md:block flex-1/5 body-style p-1`}>

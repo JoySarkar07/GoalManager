@@ -323,7 +323,7 @@ const scheduleJob = ( emailAlertTime, webAlertTime, user, workData, goalId )=>{
             );
         });
     }
-    if (user.pushSubscription && user.notificationPreferences?.push) {
+    if (user?.pushSubscription && user?.notificationPreferences?.push) {
         schedule.scheduleJob(webAlertTime, async () => {
             const goal = await GoalSchema.findById( goalId ); // Ensure goalId is included in workData
             const work = goal?.works.id( workData._id ); // Fetch work by id from embedded array

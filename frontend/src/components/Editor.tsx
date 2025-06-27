@@ -60,9 +60,11 @@ const Editor:React.FC<EditorProps> = ({
     }
 
     const handleDeleteWrok = async ()=>{
-        const deletedData = await deleteWork(parentGoalId, data._id);
-        if(deletedData && deletedData?.status==='Ok'){
-            setWorkData(deletedData.data.works);
+        if(confirm("Are you sure you want to delete this?")){
+            const deletedData = await deleteWork(parentGoalId, data._id);
+            if(deletedData && deletedData?.status==='Ok'){
+                setWorkData(deletedData.data.works);
+            }
         }
     }
 

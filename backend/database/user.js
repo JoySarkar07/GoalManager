@@ -3,11 +3,18 @@
  */
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const webPush = require('web-push');
 
 /**
  * Internal dependencies
  */
 const User = require('../models/User');
+
+webPush.setVapidDetails(
+  'mailto:you@example.com',
+  process.env.VAPID_PUBLIC_KEY,
+  process.env.VAPID_PRIVATE_KEY
+);
 
 /** 
  * This is for login functionality
@@ -127,10 +134,27 @@ const deleteUser = async (userId)=>{
     }
 }
 
+const saveSubscription = async (userId, data)=>{
+    try{
+        const {endpoint, keys} = data.subscription;
+        await User.findByIdAndUpdate(userId, {
+            pushSubscription: {
+                endpoint,
+                keys
+            }
+        });
+        return ({code: 200, status : 'Ok', message: 'Subscription saved'});
+    }catch(e){
+        console.log({e});
+        return ({code: 400, status : 'Error', message: 'Failed to save subscription user'});
+    }
+}
+
 // export all the functions
 module.exports = {
     login,
     signup,
     updateUser,
-    deleteUser
+    deleteUser,
+    saveSubscription
 }

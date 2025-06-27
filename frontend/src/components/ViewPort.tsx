@@ -6,6 +6,7 @@ import Button from './Button';
 import EditIcon from "../assets/edit.svg"
 import DeleteIcon from "../assets/delete.svg"
 import { createWork, deleteGoal, getWorks, updateGoal } from "../services/apiServices";
+import type { sideBarGoalType } from './Types';
 
 export type EditorData = {
   // Define the structure according to what Editor expects, for example:
@@ -21,6 +22,7 @@ type WorkInputKey = 'title' | 'dueDate' | 'emailTime' | 'webTime' | 'priority';
 
 type ViewPortProps = {
   selectedgoal?: any; 
+  setSelectedgoal: React.Dispatch<React.SetStateAction<sideBarGoalType|null>>;
   setGoalEdited: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -33,6 +35,7 @@ type FilterType = {
 
 const ViewPort:React.FC<ViewPortProps> = ({
   selectedgoal,
+  setSelectedgoal,
   setGoalEdited
 }) => {
   const [workData, setWorkData] = useState([]);
@@ -57,7 +60,10 @@ const ViewPort:React.FC<ViewPortProps> = ({
   }
 
   useEffect(() => {
-    if(!selectedgoal) return;
+    if( ! selectedgoal ){
+      setWorkData([]);
+      return;
+    };
     console.log({filters});
     setGoalInput(selectedgoal.title);
     fetchWorks();
@@ -110,11 +116,13 @@ const ViewPort:React.FC<ViewPortProps> = ({
   }
 
   const handleDeleteGoal = async ()=>{
-    const data = await deleteGoal(selectedgoal._id);
-    if(data?.status === 'Ok'){
-      setGoalEdited(prev=>!prev);
-      selectedgoal = null;
-      setWorkData([]);
+    if(confirm("Are you sure you want to delete this? Once deleted, it can’t be recovered.")){
+      const data = await deleteGoal(selectedgoal._id);
+      if(data?.status === 'Ok'){
+        setGoalEdited(prev=>!prev);
+        setSelectedgoal(null);
+        setWorkData([]);
+      }
     }
   }
 
@@ -151,8 +159,8 @@ const ViewPort:React.FC<ViewPortProps> = ({
         <p className='text-center border-b-2 border-b-emerald-300 pb-2 mb-2'>View Port</p>
         <div className='p-5 m-2 shadow-xl/30 rounded-xl font-extralight flex justify-between'>
           <div className='text-2xl '>
-            <span className='border mr-1'></span>
-            <span className='border mr-2'></span>
+            <span className='border mr-1 border-green-400'></span>
+            <span className='border mr-2 border-green-400'></span>
             {selectedgoal===null ? "Select a goal to edit" : ( goalTitleBox?<input type="text" name="goalTitle" id="goalTitle" className='bg-gray-800 rounded-2xl p-1' value={ goalInput } onChange={(e)=>{setGoalInput(e.target.value)}}/>:selectedgoal.title )}
           </div>
           <div className='relative text-xl flex gap-2'>

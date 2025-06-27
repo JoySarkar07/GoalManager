@@ -63,10 +63,16 @@ const deleteUser = async (userId)=>{
     return userData;
 }
 
+const saveSubscription = async (userId, data)=>{
+    const userData = await user.saveSubscription(userId, data);
+    return userData;
+}
+
 // export all the functions
 module.exports = {
     login,
     signup,
     updateUser,
-    deleteUser
+    deleteUser,
+    saveSubscription
 }

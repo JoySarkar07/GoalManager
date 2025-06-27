@@ -36,9 +36,14 @@ const Login: React.FC<LoginProps> = ({
             return res.json();
         })
         .then(loginData=>{
-            Cookies.set('authToken',loginData.data.token,{ expires: 7 });
-            setLoggedIn(true);
-            onCancel();
+            if(loginData && loginData.status==='Ok'){
+                Cookies.set('authToken',loginData.data.token,{ expires: 7 });
+                setLoggedIn(true);
+                onCancel();
+            }
+            else{
+                console.log(loginData.message);
+            }
         })
     }
 
