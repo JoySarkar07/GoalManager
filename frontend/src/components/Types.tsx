@@ -1,3 +1,5 @@
+// Type declaratios
+
 type works = {
     id:string,
     title:string,
@@ -25,6 +27,14 @@ export type sideBarGoalType = {
     subGoals: sideBarGoalType[],
 }
 
+
+export type UpdateWorkType = {
+    title?: string,
+    description?: string,
+    completed?: boolean,
+}
+
+
 export type User = {
     email: string,
     exp?: string, 
@@ -35,4 +45,11 @@ export type User = {
         email?: boolean,
         push?: boolean,
     }
+}
+
+export type UpdateDataType = {
+    name?: string;
+    email?: string;
+    emailNotification?: boolean;
+    webNotification?: boolean;
 }

@@ -36,7 +36,7 @@ const signup = async (req, res)=>{
         // get Input
         const { name, email, password } = req.body;
         const userData = await userService.signup(name, email, password, req.body?.emailPreference, req.body?.pushPreference);
-        res.status(userData.code).send({ status: userData.success, message: userData.message, user: userData.createdUser });
+        res.status(userData.code).send({ status: userData.status, message: userData.message, user: userData.createdUser });
     }catch(e){
         res.status(500).json({ status:'Error', message:'Internal Server error' });
     }
@@ -57,7 +57,7 @@ const updateUser = async (req, res)=>{
         const userId = req.user.id;
         const updates = req.body;
         const userData = await userService.updateUser(userId, updates);
-        res.status(userData.code).send({status : userData.status, message: userData.message, updatedUser: userData.updatedUser});
+        res.status(userData.code).send({status : userData.status, message: userData.message, token: userData.token});
     }catch(e){
         res.status(500).send({status : 'Error', message: 'Failed to update user', error: e.message});
     }

@@ -84,10 +84,10 @@ const signup = async (name, email, password, emailPreference, pushPreference)=>{
 
         const createdUser = await newUser.save();
 
-        return ({ code:201, success: true, message: 'User created successfully', createdUser});
+        return ({ code:201, status:'Ok', message: 'User created successfully', createdUser});
     }catch(e){
         console.log({e});
-        return ({ code:500, success: false, message:'Internal Server error' });
+        return ({ code:500, status:'Error', message:'Internal Server error' });
     }
 }
 
@@ -112,7 +112,14 @@ const updateUser = async (userId, updates)=>{
             { $set: updates},
             { new: true, runValidators: true}
         );
-        return ({code: 201, status : 'Ok', message: 'User updated successfully', updatedUser});
+
+        const token = jwt.sign(
+            { id: updatedUser._id, name: updatedUser.name, email: updatedUser.email, notificationPreferences:updatedUser.notificationPreferences },
+            process.env.JWT_SECRET,
+            { expiresIn: '7d' }
+        )
+
+        return ({code: 201, status : 'Ok', message: 'User updated successfully', token});
     }catch(e){
         return ({code: 400, status : 'Error', message: 'Failed to update user'});
     }
@@ -136,7 +143,7 @@ const deleteUser = async (userId)=>{
 
 const saveSubscription = async (userId, data)=>{
     try{
-        const {endpoint, keys} = data.subscription;
+        const { endpoint, keys } = data.subscription;
         await User.findByIdAndUpdate(userId, {
             pushSubscription: {
                 endpoint,

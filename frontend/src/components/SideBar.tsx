@@ -1,11 +1,18 @@
-import React from 'react'
+/**
+ * External dependencies
+*/
+import React, { useState, useEffect } from 'react';
+
+/**
+ * Internal dependencies
+*/
 import Goal from "./Goal";
 import Groups from "./Groups";
-import type { sideBarGoalType } from "./Types";
 import AddButtonGroups from "./AddButtonGroups";
-import { useState, useEffect } from "react";
 import { getGoal } from '../services/apiServices';
+import type { sideBarGoalType } from "./Types";
 
+// Props types for Sidebar
 type SideBarProps = {
   setSelectedgoal: React.Dispatch<React.SetStateAction<sideBarGoalType | null>>;
   goalEdited: boolean;

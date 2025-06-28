@@ -1,23 +1,25 @@
+/**
+ * External dependencies
+*/
 import React,{ useState } from 'react'
-import EditIcon from "../assets/edit.svg"
-import DeleteIcon from "../assets/delete.svg"
+
+/**
+ * Internal dependencies
+ */
 import PlusButton from './PlusButton'
 import type { EditorData } from './ViewPort'
 import { deleteWork, updateWork } from '../services/apiServices'
+import EditIcon from "../assets/edit.svg"
+import DeleteIcon from "../assets/delete.svg"
+import type { UpdateWorkType } from './Types'
+import { showToast } from '../services/notificationServices'
 
+// Props for Editor
 type EditorProps = {
     data: EditorData;
     parentGoalId: string;
     setWorkData: React.Dispatch<React.SetStateAction<any>>
 }
-
-type UpdateWorkType = {
-    title?: string,
-    description?: string,
-    completed?: boolean,
-}
-
-
 
 const Editor:React.FC<EditorProps> = ({
     data,
@@ -48,6 +50,7 @@ const Editor:React.FC<EditorProps> = ({
         if(newUpdatedData && newUpdatedData?.status==='Ok'){
             setWorkData(newUpdatedData.data.works);
         }
+        showToast(newUpdatedData.message, newUpdatedData.status);
     }
 
     const isUpdate = (previous:EditorData, newData: UpdateWorkType)=>{
@@ -65,6 +68,7 @@ const Editor:React.FC<EditorProps> = ({
             if(deletedData && deletedData?.status==='Ok'){
                 setWorkData(deletedData.data.works);
             }
+            showToast(deletedData.message, deletedData.status);
         }
     }
 
@@ -118,7 +122,6 @@ const Editor:React.FC<EditorProps> = ({
                             <label htmlFor={`completed-${data._id}`}></label>
                         </div>
                     </div>
-                    {/* <input type="checkbox" name='completed' checked={ inputs.completed } className='mr-2' onChange={ handleInput }/> */}
                 </div>
             </div>
             <div>

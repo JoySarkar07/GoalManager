@@ -1,40 +1,62 @@
-import SideBar from "./components/SideBar"
-import ViewPort from "./components/ViewPort"
-import React, { useEffect, useState } from "react"
-import type { sideBarGoalType } from "./components/Types"
-import userIcon from "./assets/user.svg"
-import SignUp from "./components/SignUp"
+/**
+ * External dependencies
+*/
+import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+
+/**
+ * Internal dependencies
+ */
+import SideBar from "./components/SideBar";
+import ViewPort from "./components/ViewPort";
+import SignUp from "./components/SignUp";
+import Login from "./components/Login";
+import Settings from "./components/Settings";
+import { userAuth, removeToken } from "./auth/userAuth";
+import { showToast, subscribeUser } from "./services/notificationServices";
+import userIcon from "./assets/user.svg";
+import hamIcon from "./assets/hammenu.svg";
+import type { sideBarGoalType } from "./components/Types";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
-import Login from "./components/Login"
-import { userAuth, removeToken } from "./auth/userAuth"
-import hamIcon from "./assets/hammenu.svg"
-import Cookies from "js-cookie"
-import Settings from "./components/Settings"
-import { subscribeUser } from "./services/notificationServices"
 
 const App:React.FC = () => {
   const [selectedgoal, setSelectedgoal] = useState<sideBarGoalType|null>(null);
   const [goalEdited, setGoalEdited] = useState<boolean>(false);
   const [openMenu, setOpenMenu] = useState<boolean>(false);
   const [openPage, setOpenPage] = useState<string | null>(null);
-  const [openSideBar, setOpenSideBar] = useState(false);
+  const [openSideBar, setOpenSideBar] = useState<boolean>(false);
   const [loggedIn, setLoggedIn] = useState<boolean>(Cookies.get('authToken')?true:false);
-  const [user, setUser] = useState<any | null>(null)
+  const [user, setUser] = useState<any | null>(null);
+
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then((reg) => {
+          console.log('Service worker registered:', reg);
+        })
+        .catch(console.error);
+    }
+  }, []);
 
   useEffect(() => {
     const currentUser = userAuth();
+    console.log({currentUser});
     setUser(currentUser);
     if(currentUser?.notificationPreferences?.push){
+      console.log("Start subscribtion");
       navigator.serviceWorker.ready.then(async (registration) => {
+        console.log("ready");
         const existingSub = await registration.pushManager.getSubscription();
-
+        console.log({existingSub});
         if ( ! existingSub ) {
           const publicKey = 'BD4JUSO9O0Y6fF0OpSWTmvY5QXkhHtfChX1Qs0o7iLAjtyCu9uuEWgGcQQ2iW4rpVEq5_5IrphuNLX4Qn42yqIw';
           subscribeUser(publicKey, currentUser?.id as string);
         }
       });
     }
-  }, [loggedIn])
+  }, [loggedIn, Cookies.get('authToken')])
   
 
   const opnePage = (pageTitle: string)=>{
@@ -44,6 +66,7 @@ const App:React.FC = () => {
       setLoggedIn(false);
       setSelectedgoal(null);
       setUser(null);
+      showToast('User logged out','Ok');
     }
     if(pageTitle==='Login'){
       setOpenPage('Login');
@@ -86,7 +109,7 @@ const App:React.FC = () => {
           openMenu && 
           <div className="absolute right-3 top-17 w-50 bg-black rounded-xl z-50">
             {
-              [loggedIn?'Logout':'Login', !loggedIn && 'Signup','Settings'].filter(Boolean).map((item, ind)=>{
+              [loggedIn?'Logout':'Login', !loggedIn && 'Signup', loggedIn && 'Settings'].filter(Boolean).map((item, ind)=>{
                 return <div key={ind} className="border border-white p-2 m-1 rounded-xl cursor-pointer hover:bg-gray-700" onClick={()=>opnePage(item as string)}>{ item }</div>;
               })
             }
@@ -106,6 +129,7 @@ const App:React.FC = () => {
           openPage==='Settings' && render(<Settings setOpenPage={ setOpenPage } user={ user }/>)
         }
       </div>
+      <ToastContainer/>
     </div>
   )
 }

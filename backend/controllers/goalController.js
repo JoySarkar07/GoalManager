@@ -42,10 +42,10 @@ const deleteGoal = async (req, res)=>{
     try{
         const goalId = req.params.goalId;
         const deletedGoalData = await goalService.deleteGoal( goalId );
-        res.status(deletedGoalData.code).send({status: deletedGoalData.status, data: deletedGoalData.data});
+        res.status(deletedGoalData.code).send({status: deletedGoalData.status, message: deletedGoalData.message});
     }
     catch(e){
-        res.status(500).send({status:'Error', data:'Internal Server Error', error: e.message});
+        res.status(500).send({status:'Error', message:'Internal Server Error', error: e.message});
     }
 }
 
@@ -79,10 +79,10 @@ const updateWork = async (req, res)=>{
         const workId = req.params.workId;
         const updates = req.body;
         const updatedWorkData = await goalService.updateWork( goalId, workId, updates );
-        res.status(updatedWorkData.code).send({status: updatedWorkData.status, data: updatedWorkData.data});
+        res.status(updatedWorkData.code).send({status: updatedWorkData.status, message:updatedWorkData.message, data: updatedWorkData.data});
     }
     catch(e){
-        res.status(500).send({status:'Error', data:'Internal Server Error', error: e.message});
+        res.status(500).send({status:'Error', message:'Internal Server Error', error: e.message});
     }
 }
 
@@ -91,7 +91,7 @@ const deleteWork = async (req, res)=>{
         const goalId = req.params.goalId;
         const workId = req.params.workId;
         const deletedWorkData = await goalService.deleteWork( goalId, workId );
-        res.status(deletedWorkData.code).send({status: deletedWorkData.status, data: deletedWorkData.data});
+        res.status(deletedWorkData.code).send({status: deletedWorkData.status, message:deletedWorkData.message, data: deletedWorkData.data});
     }
     catch(e){
         res.status(500).send({status:'Error', data:'Internal Server Error', error: e.message});

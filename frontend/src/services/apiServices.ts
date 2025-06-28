@@ -1,4 +1,5 @@
 import { getToken } from "../auth/userAuth";
+import type { UpdateDataType } from "../components/Types";
 
 export const deleteGoal = async (groupId: string): Promise<any> => {
     const url = `http://localhost:3000/api/v1/goals/${groupId}`;
@@ -80,7 +81,6 @@ export const getWorks = async ( gaolId:string, filters:any ): Promise<any> => {
         const queryString = new URLSearchParams( filters ).toString();
         url += `?${queryString}`;
     }
-    console.log({url});
     try {
         const res = await fetch(url,{
             method:'GET',
@@ -145,6 +145,24 @@ export const deleteWork = async (groupId: string, workId:string): Promise<any> =
         });
         const deletedWork = await res.json();
         return deletedWork;
+    } catch (e: any) {
+        return e.message;
+    }
+}
+
+export const updateUser = async (updatedData: UpdateDataType): Promise<any>=>{
+    const url = `http://localhost:3000/api/v1/user`;
+    try {
+        const res = await fetch(url, {
+            method: 'PATCH',
+            headers:{ 
+                'Content-Type': 'application/json',
+                'Authorization' : `Bearer ${ getToken() }`
+            },
+            body: JSON.stringify( updatedData )
+        });
+        const updatedUser = await res.json();
+        return updatedUser;
     } catch (e: any) {
         return e.message;
     }

@@ -1,9 +1,19 @@
-import React from 'react'
-import type { sideBarGoalType } from './Types'
+/**
+ * External dependencies
+*/
+import React from 'react';
+
+/**
+ * Internal dependencies
+ */
+import type { sideBarGoalType } from './Types';
+
+// Props types for Goal
 type goalProps = {
     goalData: sideBarGoalType;
     setSelectedgoal: React.Dispatch<React.SetStateAction<sideBarGoalType | null>>;
 }
+
 const Goal:React.FC<goalProps> = ({ goalData, setSelectedgoal }) => {
     const changeViewPort = ():void=>{
         setSelectedgoal( goalData );

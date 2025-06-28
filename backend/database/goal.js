@@ -107,10 +107,10 @@ const deleteGoal = async ( goalId )=>{
                 deleteGoal(goal._id);
             })
         }
-        return ({ code:201, status:'Ok', data: "Goal successfully removed" })
+        return ({ code:201, status:'Ok', message: "Goal successfully removed" })
     }
     catch(e){
-        return ({ code:500, status:'Error', data:'Enternal Server Error' });
+        return ({ code:500, status:'Error', message:'Enternal Server Error' });
     }
 }
 
@@ -233,11 +233,11 @@ const updateWork = async (goalId, workId, updates)=>{
             { $set: buildUpdateQuery('works', updates) },
             { new: true, runValidators: true }
         );
-        if( !updateWorkData ) return ({code:404, status:'Error', data: 'Goal not found or Work does not exist' });
-        return ({code:201, status:'Ok', data: updateWorkData })
+        if( !updateWorkData ) return ({code:404, status:'Error', message: 'Goal not found or Work does not exist' });
+        return ({code:201, status:'Ok', message:"Work updated Successfully", data: updateWorkData })
     }
     catch(e){
-        return ({code:500, status:'Error', data:'Enternal Server Error'});
+        return ({code:500, status:'Error', message:'Enternal Server Error', data: null});
     }
 }
 
@@ -248,12 +248,12 @@ const deleteWork = async (goalId, workId)=>{
             { $pull: { works: { _id: workId } } },
             { new: true }
         );
-        if( !deletedGoal ) return ({code:404, status:'Error', data: 'Goal not found or Work does not exist' });
-        return ({code:201, status:'Ok', data: deletedGoal })
+        if( !deletedGoal ) return ({code:404, status:'Error', message: 'Goal not found or Work does not exist' });
+        return ({code:201, status:'Ok', message:"Work deleted successfully", data: deletedGoal })
     }
     catch(e){
         console.log({e});
-        return ({code:500, status:'Error', data:'Enternal Server Error'});
+        return ({code:500, status:'Error', message:'Enternal Server Error'});
     }
 }
 
@@ -310,16 +310,7 @@ const scheduleJob = ( emailAlertTime, webAlertTime, user, workData, goalId )=>{
             sendEmail(
                 user.email, 
                 'Reminder Mail From GoalManager', 
-                `Hi there,
-                Just a quick reminder that your task "${ workData.title }" is due soon.
-                You've already made progress by planning it — now it's time to finish strong! 💪
-
-                Stay focused and take one step at a time. Completing this task will bring you closer to your goals.
-
-                ✅ You’ve got this!
-
-                Best wishes,
-                GoalManager Team`
+                `Hi there,\nJust a quick reminder that your task "${ workData.title }" is due soon.\nYou've already made progress by planning it — now it's time to finish strong! 💪\n\nStay focused and take one step at a time. Completing this task will bring you closer to your goals.\n\n✅ You’ve got this!\n\nBest wishes,\nGoalManager Team`
             );
         });
     }

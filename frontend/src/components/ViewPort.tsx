@@ -1,15 +1,23 @@
-import React, { useEffect, useRef, useState } from 'react'
+/**
+ * External dependencies
+*/
+import React, { useEffect, useRef, useState } from 'react';
+
+/**
+ * Internal dependencies
+*/
 import Editor from './Editor';
 import { userAuth } from '../auth/userAuth';
 import PlusButton from './PlusButton';
 import Button from './Button';
+import { createWork, deleteGoal, getWorks, updateGoal } from "../services/apiServices";
 import EditIcon from "../assets/edit.svg"
 import DeleteIcon from "../assets/delete.svg"
-import { createWork, deleteGoal, getWorks, updateGoal } from "../services/apiServices";
 import type { sideBarGoalType } from './Types';
+import { showToast } from '../services/notificationServices';
 
+// Props types for viewPort
 export type EditorData = {
-  // Define the structure according to what Editor expects, for example:
   title: string;
   description: string;
   completed: boolean;
@@ -64,7 +72,6 @@ const ViewPort:React.FC<ViewPortProps> = ({
       setWorkData([]);
       return;
     };
-    console.log({filters});
     setGoalInput(selectedgoal.title);
     fetchWorks();
   },[selectedgoal, filters])
@@ -83,6 +90,7 @@ const ViewPort:React.FC<ViewPortProps> = ({
       });
       setOpenBox(false);
     }
+    showToast(createdWork.message, createdWork.status);
   }
 
   const handleChange=(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> )=>{
@@ -97,14 +105,18 @@ const ViewPort:React.FC<ViewPortProps> = ({
   }
 
   const openWorkInputBox = ()=>{
-    if(!selectedgoal){
-      console.log("First select a goal");
+    if( ! selectedgoal){
+      showToast("First select a goal","Warning")
       return;
     }
     setOpenBox((prev=>!prev));
   }
 
   const goalTitleEdit = async ()=>{
+    if(!selectedgoal){
+      showToast("First select a goal","Warning");
+      return;
+    }
     setGoalTitleBox(prev=>!prev);
     if(goalTitleBox && (goalInput !== selectedgoal.title)){
       const updatedGoal = await updateGoal(selectedgoal._id, {title: goalInput});
@@ -112,10 +124,15 @@ const ViewPort:React.FC<ViewPortProps> = ({
         selectedgoal.title = goalInput;
         setGoalEdited(prev=>!prev);
       }
+      showToast(updatedGoal.message, updatedGoal.status);
     }
   }
 
   const handleDeleteGoal = async ()=>{
+    if(!selectedgoal){
+      showToast("First select a goal","Warning");
+      return;
+    }
     if(confirm("Are you sure you want to delete this? Once deleted, it can’t be recovered.")){
       const data = await deleteGoal(selectedgoal._id);
       if(data?.status === 'Ok'){
@@ -123,6 +140,7 @@ const ViewPort:React.FC<ViewPortProps> = ({
         setSelectedgoal(null);
         setWorkData([]);
       }
+      showToast(data.message, data.status);
     }
   }
 

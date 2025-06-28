@@ -1,8 +1,19 @@
-import React, { useState } from 'react'
+/**
+ * External dependencies
+*/
+import React, { useState } from 'react';
+import Cookies from 'js-cookie';
+
+/**
+ * Internal dependencies
+*/
 import InputPanel from './InputPanel'
 import Button from './Button'
-import type { User } from './Types'
+import { updateUser } from '../services/apiServices'
+import type { UpdateDataType, User } from './Types'
+import { showToast } from '../services/notificationServices';
 
+// Props types for Settings
 type SettingProps = {
     setOpenPage : React.Dispatch<React.SetStateAction<string | null>>,
     user: User,
@@ -19,29 +30,35 @@ const Settings: React.FC<SettingProps> = ({
         emailNotification: user.notificationPreferences?.email,
         webNotification: user.notificationPreferences?.push,
     })
-    const onFormSubmit = ()=>{
+    const onFormSubmit = async ()=>{
         if(formData.name==="" || formData.email==="" ){
-            console.log("Some fields are empty");
+            showToast("Some fields are empty", "Warning");
             return;
         }
         if( ! formData.email.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)){
-            console.log("Invalid Email");
+            showToast("Invalid Email", "Warning");
             return;
         }
-        // const url = 'http://localhost:3000/api/v1/user/signup'
-        // fetch(url,{
-        //     method:'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify({name:formData.name, email:formData.email, emailPreference: formData.emailNotification, pushPreference: formData.webNotification})
-        // })
-        // .then(res=>{
-        //     return res.json();
-        // })
-        // .then(data=>{
-        //     console.log(data);
-        //     onFormReset();
-        //     setOpenPage(null);
-        // })
+        let updatedData: UpdateDataType = {};
+        if(formData.name !== user.name){
+            updatedData.name = formData.name;
+        }
+        if(formData.email !== user.email){
+            updatedData.email = formData.email;
+        }
+        if(formData.emailNotification !== user.notificationPreferences?.email){
+            updatedData.emailNotification = formData.emailNotification;
+        }
+        if(formData.webNotification !== user.notificationPreferences?.push){
+            updatedData.webNotification = formData.webNotification;
+        }
+        
+        const updatedUser = await updateUser(updatedData);
+        if(updatedUser && updatedUser.status==='Ok'){
+            Cookies.set('authToken', updatedUser.token, { expires: 7 });
+            onCancel();
+        }
+        showToast(updatedUser.message, updatedUser.status);
     }
 
     const onCancel = ()=>{

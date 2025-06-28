@@ -1,9 +1,17 @@
 import { getToken } from "../auth/userAuth";
+import { toast } from 'react-toastify';
 
 export async function subscribeUser(publicKey: string, userId: string): Promise<void> {
   if ('serviceWorker' in navigator && 'PushManager' in window) {
     try {
-      const registration = await navigator.serviceWorker.register('/service-worker.js');
+      const registration = await navigator.serviceWorker.ready;
+
+      // Check if already subscribed
+      const existingSub = await registration.pushManager.getSubscription();
+      if (existingSub) {
+        console.log('Already subscribed');
+        return;
+      }
 
       const subscription: PushSubscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
@@ -42,4 +50,17 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   }
 
   return outputArray;
+}
+
+export const showToast = (text:string, status?:string)=>{
+  if(status==='Ok'){
+    return toast.success(text);
+  }
+  else if(status==='Error'){
+    return toast.error(text)
+  }
+  else if(status==='Warning'){
+    return toast.warn(text);
+  }
+  return toast(text);
 }

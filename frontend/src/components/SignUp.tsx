@@ -1,7 +1,17 @@
+/**
+ * External dependencies
+*/
 import React, { useState } from 'react';
+
+/**
+ * Internal dependencies
+*/
 import Button from './Button';
 import InputPanel from './InputPanel';
+import { signup } from '../services/authServices';
+import { showToast } from '../services/notificationServices';
 
+// Props types for Signup
 type SignUpProps = {
     setOpenPage : React.Dispatch<React.SetStateAction<string | null>>
 }
@@ -18,33 +28,25 @@ const SignUp: React.FC<SignUpProps> = ({
         emailNotification: true,
         webNotification:false,
     })
-    const onFormSubmit = ()=>{
+    const onFormSubmit = async ()=>{
         if(formData.name==="" || formData.email==="" || formData.password==="" || formData.confirmPassword===""){
-            console.log("Some fields are empty");
+            showToast("Some fields are empty", "Warning");
             return;
         }
         if(formData.password !== formData.confirmPassword){
-            console.log("Password and confirm password must be same");
+            showToast("Password and confirm password must be same", "Error");
             return;
         }
         if( ! formData.email.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)){
-            console.log("Invalid Email");
+            showToast("Invalid Email", "Warning");
             return;
         }
-        const url = 'http://localhost:3000/api/v1/user/signup'
-        fetch(url,{
-            method:'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({name:formData.name, email:formData.email, password:formData.password, emailPreference: formData.emailNotification, pushPreference: formData.webNotification})
-        })
-        .then(res=>{
-            return res.json();
-        })
-        .then(data=>{
-            console.log(data);
+        const data = await signup({name: formData.name, email: formData.email, password: formData.password, emailPreference: formData.emailNotification, pushPreference: formData.webNotification});
+        if(data && data.status==='Ok'){
             onFormReset();
             setOpenPage(null);
-        })
+        }
+        showToast(data.message, data.status);
     }
 
     const onCancel = ()=>{

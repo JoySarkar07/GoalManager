@@ -1,6 +1,14 @@
+/**
+ * External dependencies
+*/
 import React from 'react';
+
+/**
+ * Internal dependencies
+*/
 import crossIcon from "../assets/cross.svg";
 
+// Props types for inputPanel
 type Inputs = {
     title: string,
     placeHolder: string,

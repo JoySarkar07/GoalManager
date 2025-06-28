@@ -1,8 +1,18 @@
-import React, { useState } from 'react'
-import InputPanel from './InputPanel';
-import Button from './Button';
+/**
+ * External dependencies
+*/
+import React, { useState } from 'react';
 import Cookies from 'js-cookie';
 
+/**
+ * Internal dependencies
+*/
+import InputPanel from './InputPanel';
+import Button from './Button';
+import { login } from '../services/authServices';
+import { showToast } from '../services/notificationServices';
+
+// Props types for Login
 type LoginProps = {
     setOpenPage : React.Dispatch<React.SetStateAction<string | null>>,
     setLoggedIn : React.Dispatch<React.SetStateAction<boolean>>,
@@ -17,34 +27,22 @@ const Login: React.FC<LoginProps> = ({
         email:"",
         password:"",
     })
-    const onFormSubmit = ()=>{
+    const onFormSubmit = async ()=>{
         if(formData.email==="" || formData.password===""){
-            console.log("Email or password is empty");
+            showToast("Email or password is empty", "Error");
             return;
         }
         if(!formData.email.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)){
-            console.log("Invalid Email");
+            showToast("Invalid Email", "Warning");
             return;
         }
-        const url = 'http://localhost:3000/api/v1/user/login'
-        fetch(url,{
-            method:'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({email:formData.email, password:formData.password})
-        })
-        .then(res=>{
-            return res.json();
-        })
-        .then(loginData=>{
-            if(loginData && loginData.status==='Ok'){
-                Cookies.set('authToken',loginData.data.token,{ expires: 7 });
-                setLoggedIn(true);
-                onCancel();
-            }
-            else{
-                console.log(loginData.message);
-            }
-        })
+        const loginData = await login({email:formData.email, password:formData.password});
+        if(loginData && loginData.status==='Ok'){
+            Cookies.set('authToken',loginData.data.token,{ expires: 7 });
+            setLoggedIn(true);
+            onCancel();
+        }
+        showToast(loginData.message, loginData.status);
     }
 
     const onCancel = ()=>{
