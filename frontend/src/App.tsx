@@ -124,7 +124,7 @@ const App:React.FC = () => {
           </div>
         }
       </div>
-      <div className="flex h-[89%] gap-2">
+      <div className="flex h-[86%] md:h-[89%] gap-2">
         <SideBar setSelectedgoal={ setSelectedgoal } loggedIn={ loggedIn } goalEdited={ goalEdited } openSideBar={ openSideBar } setLoading={ setLoading }/>
         <ViewPort selectedgoal={ selectedgoal } setGoalEdited={ setGoalEdited } setSelectedgoal={ setSelectedgoal } setLoading={ setLoading }/>
         {

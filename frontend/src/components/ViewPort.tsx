@@ -54,6 +54,7 @@ const ViewPort:React.FC<ViewPortProps> = ({
   const user = useRef<any>(userAuth());
   const [goalInput, setGoalInput] = useState<string>(selectedgoal?.title || "");
   const [filters, setFilters] = useState<FilterType>({});
+  const [openFilter, setOpenFilter] = useState<boolean>(false);
   const [workInputs, setWorkInputs] = useState<Record<WorkInputKey, string>>({
     title:"",
     dueDate:"",
@@ -179,13 +180,13 @@ const ViewPort:React.FC<ViewPortProps> = ({
   
   return (
     <>
-      <div className='flex-4/5 body-style'>
+      <div className='flex-4/5 flex flex-col body-style'>
         <p className='text-center border-b-2 border-b-emerald-300 pb-2 mb-2'>View Port</p>
         <div className='p-5 m-2 shadow-xl/30 rounded-xl font-extralight flex justify-between'>
           <div className='text-2xl '>
             <span className='border mr-1 border-green-400'></span>
             <span className='border mr-2 border-green-400'></span>
-            {selectedgoal===null ? "Select a goal to edit" : ( goalTitleBox?<input type="text" name="goalTitle" id="goalTitle" className='bg-gray-800 rounded-2xl p-1' value={ goalInput } onChange={(e)=>{setGoalInput(e.target.value)}}/>:selectedgoal.title )}
+            {selectedgoal===null ? "Select a goal" : ( goalTitleBox?<input type="text" name="goalTitle" id="goalTitle" className='bg-gray-800 rounded-2xl p-1' value={ goalInput } onChange={(e)=>{setGoalInput(e.target.value)}}/>:selectedgoal.title )}
           </div>
           <div className='relative text-xl flex gap-2'>
             <button className='h-7 w-7 bg-emerald-500 rounded-xl cursor-pointer drop-shadow-xl/50' title='edit' onClick={ goalTitleEdit }><img src={ EditIcon } alt="edit logo" /></button>
@@ -236,33 +237,42 @@ const ViewPort:React.FC<ViewPortProps> = ({
             </div>
           </div>
         </div>
-        <div className='p-5 m-2 shadow-xl/30 rounded-xl font-extralight md:flex gap-2 justify-between items-center'>
-          <input type="text" id="searchwork" value={filters?.title || ''} onChange={ handleFilterChange } className="flex-1/12 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="search" />
-          <div className='flex-2/12'>
-            <select id="statusInp" value={ filters?.completed || ''} onChange={ handleFilterChange } className=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-              <option value="">Choose Status</option>
-              <option value="true">Completed</option>
-              <option value="false">Not Completed</option>
-            </select>
+        <div className='p-5 m-2  md:flex-2/12 shadow-xl/30 rounded-xl font-extralight md:flex gap-2 justify-between items-center'>
+          <div className='flex gap-1'>
+            <button className='cursor-pointer' onClick={()=>{setOpenFilter(prev=>!prev)}}>{openFilter?'🔼':'🔽'}</button>
+            <p>{openFilter?'close filter':'open filter'}</p>
           </div>
-          <div className='flex-2/12'>
-            <select id="priorityInp" value={ filters?.priority || ''} onChange={ handleFilterChange } className=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-              <option value="">Choose Priority</option>
-              <option value="high">High</option>
-              <option value="mid">Mid</option>
-              <option value="low">Low</option>
-            </select>
-          </div>
-          <div className="relative max-w-sm">
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-              <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
-              </svg>
-            </div>
-            <input id="default-datepicker" type='datetime-local' value={ filters?.dueDate || '' } onChange={ handleFilterChange } className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date" />
-          </div>
+          {
+            openFilter && 
+            <>
+              <input type="text" id="searchwork" value={filters?.title || ''} onChange={ handleFilterChange } className="flex-1/12 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="search" />
+              <div className='flex-2/12'>
+                <select id="statusInp" value={ filters?.completed || ''} onChange={ handleFilterChange } className=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                  <option value="">Choose Status</option>
+                  <option value="true">Completed</option>
+                  <option value="false">Not Completed</option>
+                </select>
+              </div>
+              <div className='flex-2/12'>
+                <select id="priorityInp" value={ filters?.priority || ''} onChange={ handleFilterChange } className=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                  <option value="">Choose Priority</option>
+                  <option value="high">High</option>
+                  <option value="mid">Mid</option>
+                  <option value="low">Low</option>
+                </select>
+              </div>
+              <div className="relative max-w-sm">
+                <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                  <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                  </svg>
+                </div>
+                <input id="default-datepicker" type='datetime-local' value={ filters?.dueDate || '' } onChange={ handleFilterChange } className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date" />
+              </div>
+            </>
+          }
         </div>
-        <div className='p-5 m-2 shadow-xl/30 rounded-xl h-[65%] overflow-y-auto'>
+        <div className='flex-8/12 p-5 m-2 shadow-xl/30 rounded-xl overflow-y-auto'>
             {
               workData.length===0 && <p>No works to show</p>
             }
