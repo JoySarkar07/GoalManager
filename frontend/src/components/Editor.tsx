@@ -106,12 +106,12 @@ const Editor:React.FC<EditorProps> = ({
   return (
     <>  
         <div className={`flex flex-col p-5 m-2 shadow-xl/30 rounded-xl h-[${openDescription?'80%':'20%'}] break-words`}>
-            <div className='flex justify-between'>
+            <div className='flex flex-col md:flex-row justify-between'>
                 {forEdit 
                     ? <input type="text" name='title' value={inputs.title} onChange={handleInput}/>
                     :<h2 className='text-xl font-bold mb-4'>{data.title}</h2>
                 }
-                <div className='flex justify-center items-center gap-2'>
+                <div className='flex justify-start md:justify-center items-center gap-2'>
                     <span className={`${data.priority==='low'&& 'bg-green-300'} ${data.priority==='mid'&& 'bg-orange-300'} ${data.priority==='high'&& 'bg-red-500'} backdrop-blur-none px-2 rounded-2xl drop-shadow-xl/50`}>{data.priority}</span>
                     <PlusButton onPlusClick={openDescriptionTab} title={"Expand"}/>
                     <button className='h-7 w-7 bg-emerald-500 rounded-xl cursor-pointer drop-shadow-xl/50' onClick={ openForEdit } title='edit'><img src={ EditIcon } alt="edit logo" /></button>
