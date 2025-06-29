@@ -33,7 +33,7 @@ const App:React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    setLoading(true);
+    if(loggedIn) setLoading(true);
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/service-worker.js')
         .then((reg) => {

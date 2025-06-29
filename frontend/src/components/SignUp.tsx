@@ -47,10 +47,10 @@ const SignUp: React.FC<SignUpProps> = ({
         const data = await signup({name: formData.name, email: formData.email, password: formData.password, emailPreference: formData.emailNotification, pushPreference: formData.webNotification});
         if(data && data.status==='Ok'){
             onFormReset();
-            setLoading(false);
             setOpenPage(null);
         }
         showToast(data.message, data.status);
+        setLoading(false);
     }
 
     const onCancel = ()=>{

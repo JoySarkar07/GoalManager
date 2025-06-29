@@ -44,10 +44,10 @@ const Login: React.FC<LoginProps> = ({
         if(loginData && loginData.status==='Ok'){
             Cookies.set('authToken',loginData.data.token,{ expires: 7 });
             setLoggedIn(true);
-            setLoading(false);
             onCancel();
         }
         showToast(loginData.message, loginData.status);
+        setLoading(false);
     }
 
     const onCancel = ()=>{

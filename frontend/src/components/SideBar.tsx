@@ -41,8 +41,8 @@ const SideBar:React.FC<SideBarProps> = ({
     const goalsData = await getGoal(filters);
     if(goalsData && goalsData.status==='Ok'){
       setGoals(goalsData.data);
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>)=>{

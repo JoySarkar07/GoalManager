@@ -59,10 +59,10 @@ const Settings: React.FC<SettingProps> = ({
         const updatedUser = await updateUser(updatedData);
         if(updatedUser && updatedUser.status==='Ok'){
             Cookies.set('authToken', updatedUser.token, { expires: 7 });
-            setLoading(false);
             onCancel();
         }
         showToast(updatedUser.message, updatedUser.status);
+        setLoading(false);
     }
 
     const onCancel = ()=>{

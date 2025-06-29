@@ -61,7 +61,6 @@ const getGoals = async (userId, query = {})=>{
         // add pagination
         // formula : (page - 1) * itemsPerPage + 1
         const skip = (currentPage - 1) * itemsPerPage;
-        console.log({skip});
 
         let rootGoals = await GoalSchema.find(filter).select('_id title isGroup').skip(skip).limit(itemsPerPage);
         if( !rootGoals ) return ({code:404, status:'Error', data: 'Goal not found or does not exist' });

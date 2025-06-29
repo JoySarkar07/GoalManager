@@ -66,8 +66,10 @@ const ViewPort:React.FC<ViewPortProps> = ({
     const worksData = await getWorks( selectedgoal?._id, filters );
     if(worksData && worksData?.status==='Ok'){
       setWorkData(worksData.data);
-      setLoading(false);
+    }else{
+      showToast(worksData.message, worksData.status);
     }
+    setLoading(false);
   }
 
   useEffect(() => {

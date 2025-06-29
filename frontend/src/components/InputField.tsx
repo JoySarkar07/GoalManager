@@ -15,7 +15,6 @@ const InputField: React.FC<InputFieldProps> = ({
   setLoading,
   onClick
 }) => {
-  console.log({setLoading});
   const [inputData, setInputData] = useState< string >( '' );
   const handelInput = ( e: React.ChangeEvent< HTMLInputElement > )=>{
     setInputData( e.target.value );
