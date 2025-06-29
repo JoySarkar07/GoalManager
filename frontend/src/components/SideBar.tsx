@@ -15,6 +15,7 @@ import type { sideBarGoalType } from "./Types";
 // Props types for Sidebar
 type SideBarProps = {
   setSelectedgoal: React.Dispatch<React.SetStateAction<sideBarGoalType | null>>;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   goalEdited: boolean;
   loggedIn : boolean;
   openSideBar: boolean;
@@ -30,6 +31,7 @@ const SideBar:React.FC<SideBarProps> = ({
   goalEdited,
   loggedIn,
   openSideBar,
+  setLoading
 }) => {
   const [goals, setGoals] = useState<sideBarGoalType[]>([]);
   const [goalChanged, setGoalChanged] = useState(false);
@@ -39,6 +41,7 @@ const SideBar:React.FC<SideBarProps> = ({
     const goalsData = await getGoal(filters);
     if(goalsData && goalsData.status==='Ok'){
       setGoals(goalsData.data);
+      setLoading(false);
     }
   };
 
@@ -72,7 +75,7 @@ const SideBar:React.FC<SideBarProps> = ({
         <div>
           <div>
             <div className='relative flex gap-2 m-1'>
-              <AddButtonGroups setGoalChanged={ setGoalChanged }/>
+              <AddButtonGroups setGoalChanged={ setGoalChanged } setLoading={ setLoading }/>
               <div className='w-full'>
                 <input type="text" name="search" id="search" value={ filters?.title || '' } onChange={ handleFilterChange } placeholder='search' className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-4xl focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
               </div>
@@ -98,7 +101,7 @@ const SideBar:React.FC<SideBarProps> = ({
             <div className="mt-3">
               {
                 goals.length>0 && goals.map((goal, ind)=>{
-                  return goal.isGroup?<Groups key={ ind } setSelectedgoal={ setSelectedgoal } goalData={ goal } goals={ goal.subGoals } setGoalChanged={ setGoalChanged }/>:<Goal key={ ind } setSelectedgoal={ setSelectedgoal } goalData={ goal }/>;
+                  return goal.isGroup?<Groups key={ ind } setSelectedgoal={ setSelectedgoal } goalData={ goal } goals={ goal.subGoals } setGoalChanged={ setGoalChanged } setLoading={ setLoading }/>:<Goal key={ ind } setSelectedgoal={ setSelectedgoal } goalData={ goal }/>;
                 })
               }
               {

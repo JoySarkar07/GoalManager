@@ -14,10 +14,12 @@ import { showToast } from '../services/notificationServices';
 // Props types for Signup
 type SignUpProps = {
     setOpenPage : React.Dispatch<React.SetStateAction<string | null>>
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SignUp: React.FC<SignUpProps> = ({
-    setOpenPage
+    setOpenPage,
+    setLoading
 }) => {
     const fields = [{title:'Name', placeHolder:'Enter your name', type:'text'}, {title:'Email', placeHolder:'Enter your email', type:'email'}, {title:'Password', placeHolder:'Enter your password', type:'password'}, {title:'Confirm Password', placeHolder:'Enter your password again', type:'password'}];
     const [formData, setFormData] = useState({
@@ -41,9 +43,11 @@ const SignUp: React.FC<SignUpProps> = ({
             showToast("Invalid Email", "Warning");
             return;
         }
+        setLoading(true);
         const data = await signup({name: formData.name, email: formData.email, password: formData.password, emailPreference: formData.emailNotification, pushPreference: formData.webNotification});
         if(data && data.status==='Ok'){
             onFormReset();
+            setLoading(false);
             setOpenPage(null);
         }
         showToast(data.message, data.status);

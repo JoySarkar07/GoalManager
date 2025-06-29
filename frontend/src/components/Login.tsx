@@ -16,17 +16,20 @@ import { showToast } from '../services/notificationServices';
 type LoginProps = {
     setOpenPage : React.Dispatch<React.SetStateAction<string | null>>,
     setLoggedIn : React.Dispatch<React.SetStateAction<boolean>>,
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Login: React.FC<LoginProps> = ({
     setOpenPage,
-    setLoggedIn
+    setLoggedIn,
+    setLoading
 }) => {
     const fields = [{title:'Email', placeHolder:'Enter your email', type:'email'}, {title:'Password', placeHolder:'Enter your password', type:'password'}];
     const [formData, setFormData] = useState({
         email:"",
         password:"",
     })
+
     const onFormSubmit = async ()=>{
         if(formData.email==="" || formData.password===""){
             showToast("Email or password is empty", "Error");
@@ -36,10 +39,12 @@ const Login: React.FC<LoginProps> = ({
             showToast("Invalid Email", "Warning");
             return;
         }
+        setLoading(true);
         const loginData = await login({email:formData.email, password:formData.password});
         if(loginData && loginData.status==='Ok'){
             Cookies.set('authToken',loginData.data.token,{ expires: 7 });
             setLoggedIn(true);
+            setLoading(false);
             onCancel();
         }
         showToast(loginData.message, loginData.status);
@@ -66,7 +71,7 @@ const Login: React.FC<LoginProps> = ({
         children={
             <>
                 <div className='text-center'>
-                    <Button title='Login' onClick={onFormSubmit} bgClasses='text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2'/>
+                    <Button title='Login' onClick={ onFormSubmit } bgClasses='text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2'/>
                 </div>
             </>
         }

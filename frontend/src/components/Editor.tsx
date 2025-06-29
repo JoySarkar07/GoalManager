@@ -131,7 +131,7 @@ const Editor:React.FC<EditorProps> = ({
                 (
                     forEdit 
                     ? <textarea className='text-lg mb-2 overflow-y-auto h-[80%]' name='description' value={inputs.description} onChange={handleInput}/>
-                    : <p className='text-lg mb-2 overflow-y-auto'>{"=>"}{data.description}</p> 
+                    : <pre className='text-lg mb-2 overflow-y-auto'>{"=>"}{data.description}</pre> 
                 )
             }
         </div>

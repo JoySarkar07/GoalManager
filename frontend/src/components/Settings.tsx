@@ -16,11 +16,13 @@ import { showToast } from '../services/notificationServices';
 // Props types for Settings
 type SettingProps = {
     setOpenPage : React.Dispatch<React.SetStateAction<string | null>>,
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
     user: User,
 }
 
 const Settings: React.FC<SettingProps> = ({
     setOpenPage,
+    setLoading,
     user
 }) => {
     const fields = [{title:'Name', placeHolder:'Enter your name', type:'text'}, {title:'Email', placeHolder:'Enter your email', type:'email'}];
@@ -39,6 +41,7 @@ const Settings: React.FC<SettingProps> = ({
             showToast("Invalid Email", "Warning");
             return;
         }
+        setLoading(true);
         let updatedData: UpdateDataType = {};
         if(formData.name !== user.name){
             updatedData.name = formData.name;
@@ -56,6 +59,7 @@ const Settings: React.FC<SettingProps> = ({
         const updatedUser = await updateUser(updatedData);
         if(updatedUser && updatedUser.status==='Ok'){
             Cookies.set('authToken', updatedUser.token, { expires: 7 });
+            setLoading(false);
             onCancel();
         }
         showToast(updatedUser.message, updatedUser.status);

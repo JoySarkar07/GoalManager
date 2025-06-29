@@ -1,5 +1,6 @@
 import { getToken } from "../auth/userAuth";
 import { toast } from 'react-toastify';
+import { getApiLink } from "./apiServices";
 
 export async function subscribeUser(publicKey: string, userId: string): Promise<void> {
   if ('serviceWorker' in navigator && 'PushManager' in window) {
@@ -9,7 +10,6 @@ export async function subscribeUser(publicKey: string, userId: string): Promise<
       // Check if already subscribed
       const existingSub = await registration.pushManager.getSubscription();
       if (existingSub) {
-        console.log('Already subscribed');
         return;
       }
 
@@ -18,8 +18,7 @@ export async function subscribeUser(publicKey: string, userId: string): Promise<
         applicationServerKey: urlBase64ToUint8Array(publicKey)
       });
 
-      const url = 'http://localhost:3000/api/v1/user/save-subscription';
-      const res = await fetch(url, {
+      const res = await fetch(getApiLink('user/save-subscription'), {
         method: 'POST',
         body: JSON.stringify({ subscription, userId }),
         headers: { 
@@ -28,12 +27,12 @@ export async function subscribeUser(publicKey: string, userId: string): Promise<
         }
       });
       const push = await res.json();
-      alert(push.message);
+      showToast(push.message, push.status);
     } catch (err) {
       console.error('Push error:', err);
     }
   } else {
-    alert('Push not supported!');
+    showToast('Push not supported!', "Warning");
   }
 }
 

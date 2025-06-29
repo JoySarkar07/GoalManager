@@ -20,6 +20,7 @@ import type { sideBarGoalType } from "./components/Types";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
+import Loading from "./components/Loading";
 
 const App:React.FC = () => {
   const [selectedgoal, setSelectedgoal] = useState<sideBarGoalType|null>(null);
@@ -29,8 +30,10 @@ const App:React.FC = () => {
   const [openSideBar, setOpenSideBar] = useState<boolean>(false);
   const [loggedIn, setLoggedIn] = useState<boolean>(Cookies.get('authToken')?true:false);
   const [user, setUser] = useState<any | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    setLoading(true);
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/service-worker.js')
         .then((reg) => {
@@ -42,7 +45,6 @@ const App:React.FC = () => {
 
   useEffect(() => {
     const currentUser = userAuth();
-    console.log({currentUser});
     setUser(currentUser);
     if(currentUser?.notificationPreferences?.push){
       console.log("Start subscribtion");
@@ -62,11 +64,13 @@ const App:React.FC = () => {
   const opnePage = (pageTitle: string)=>{
     setOpenMenu(false);
     if(pageTitle==='Logout'){
+      setLoading(true);
       removeToken();
       setLoggedIn(false);
       setSelectedgoal(null);
       setUser(null);
       showToast('User logged out','Ok');
+      setLoading(false);
     }
     if(pageTitle==='Login'){
       setOpenPage('Login');
@@ -92,6 +96,10 @@ const App:React.FC = () => {
   }
 
   return (
+    <>
+    {
+      loading && <Loading/>
+    }
     <div className="h-screen w-screen bg-gray-600 text-white">
       <div className="bg-black text-white text-center p-5 flex">
         <div className="h-8 w-8 invert cursor-pointer md:hidden" onClick={ toggleViewPort }>
@@ -117,20 +125,21 @@ const App:React.FC = () => {
         }
       </div>
       <div className="flex h-[89%] gap-2">
-        <SideBar setSelectedgoal={ setSelectedgoal } loggedIn={ loggedIn } goalEdited={ goalEdited } openSideBar={ openSideBar }/>
-        <ViewPort selectedgoal={ selectedgoal } setGoalEdited={ setGoalEdited } setSelectedgoal={ setSelectedgoal }/>
+        <SideBar setSelectedgoal={ setSelectedgoal } loggedIn={ loggedIn } goalEdited={ goalEdited } openSideBar={ openSideBar } setLoading={ setLoading }/>
+        <ViewPort selectedgoal={ selectedgoal } setGoalEdited={ setGoalEdited } setSelectedgoal={ setSelectedgoal } setLoading={ setLoading }/>
         {
-          openPage==='Signup' && render(<SignUp setOpenPage={ setOpenPage }/>)
+          openPage==='Signup' && render(<SignUp setOpenPage={ setOpenPage } setLoading={ setLoading }/>)
         }
         {
-          openPage==='Login' && render(<Login setOpenPage={ setOpenPage } setLoggedIn={ setLoggedIn }/>)
+          openPage==='Login' && render(<Login setOpenPage={ setOpenPage } setLoggedIn={ setLoggedIn } setLoading={ setLoading }/>)
         }
         {
-          openPage==='Settings' && render(<Settings setOpenPage={ setOpenPage } user={ user }/>)
+          openPage==='Settings' && render(<Settings setOpenPage={ setOpenPage } user={ user } setLoading={ setLoading }/>)
         }
       </div>
       <ToastContainer/>
     </div>
+    </>
   )
 }
 

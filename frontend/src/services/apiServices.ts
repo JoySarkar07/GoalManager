@@ -1,10 +1,19 @@
 import { getToken } from "../auth/userAuth";
 import type { UpdateDataType } from "../components/Types";
 
+
+export const getApiLink = (endpoint:string)=>{
+    const debug = true;
+    const version = 'v1';
+    if(debug){
+        return `http://localhost:3000/api/${ version }/${ endpoint }`;
+    }
+    return ``;
+}
+
 export const deleteGoal = async (groupId: string): Promise<any> => {
-    const url = `http://localhost:3000/api/v1/goals/${groupId}`;
     try {
-        const res = await fetch(url, {
+        const res = await fetch(getApiLink(`goals/${groupId}`), {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${ getToken() }`
@@ -18,9 +27,8 @@ export const deleteGoal = async (groupId: string): Promise<any> => {
 }
 
 export const updateGoal = async (groupId: string, data:any): Promise<any> => {
-    const url = `http://localhost:3000/api/v1/goals/${ groupId }`;
     try {
-        const res = await fetch(url, {
+        const res = await fetch(getApiLink(`goals/${ groupId }`), {
             method: 'PATCH',
             headers:{ 
                 'Content-Type': 'application/json',
@@ -37,13 +45,13 @@ export const updateGoal = async (groupId: string, data:any): Promise<any> => {
 
 
 export const getGoal = async (filters:any): Promise<any> => {
-    let url = `http://localhost:3000/api/v1/goals`;
+    let url = getApiLink('goals');
     if (filters) {
         const queryString = new URLSearchParams(filters).toString();
         url += `?${queryString}`;
     }
     try {
-        const res = await fetch(url,{
+        const res = await fetch(url, {
             method:'GET',
             headers: { 
                 'Content-Type': 'application/json',
@@ -58,9 +66,8 @@ export const getGoal = async (filters:any): Promise<any> => {
 }
 
 export const createGoal = async ( data:any ): Promise<any> => {
-    const url = `http://localhost:3000/api/v1/goals`;
     try {
-        const res = await fetch(url,{
+        const res = await fetch(getApiLink('goals'), {
             method:'POST',
             headers: { 
                 'Content-Type': 'application/json',
@@ -76,7 +83,7 @@ export const createGoal = async ( data:any ): Promise<any> => {
 }
 
 export const getWorks = async ( gaolId:string, filters:any ): Promise<any> => {
-    let url = `http://localhost:3000/api/v1/goals/${ gaolId }/work`;
+    let url = getApiLink(`goals/${ gaolId }/work`);
     if(filters){
         const queryString = new URLSearchParams( filters ).toString();
         url += `?${queryString}`;
@@ -98,9 +105,8 @@ export const getWorks = async ( gaolId:string, filters:any ): Promise<any> => {
 
 
 export const createWork = async ( goalId:string, data:any ): Promise<any> => {
-    const url = `http://localhost:3000/api/v1/goals/${ goalId }/work`;
     try {
-        const res = await fetch(url,{
+        const res = await fetch(getApiLink(`goals/${ goalId }/work`), {
             method:'POST',
             headers: { 
                 'Content-Type': 'application/json',
@@ -117,9 +123,8 @@ export const createWork = async ( goalId:string, data:any ): Promise<any> => {
 
 
 export const updateWork = async (groupId: string, workId:string, data:any): Promise<any> => {
-    const url = `http://localhost:3000/api/v1/goals/${ groupId }/work/${ workId }`;
     try {
-        const res = await fetch(url, {
+        const res = await fetch(getApiLink(`goals/${ groupId }/work/${ workId }`), {
             method: 'PATCH',
             headers:{ 
                 'Content-Type': 'application/json',
@@ -135,9 +140,8 @@ export const updateWork = async (groupId: string, workId:string, data:any): Prom
 }
 
 export const deleteWork = async (groupId: string, workId:string): Promise<any> => {
-    const url = `http://localhost:3000/api/v1/goals/${ groupId }/work/${ workId }`;
     try {
-        const res = await fetch(url, {
+        const res = await fetch(getApiLink(`goals/${ groupId }/work/${ workId }`), {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${ getToken() }`
@@ -151,9 +155,8 @@ export const deleteWork = async (groupId: string, workId:string): Promise<any> =
 }
 
 export const updateUser = async (updatedData: UpdateDataType): Promise<any>=>{
-    const url = `http://localhost:3000/api/v1/user`;
     try {
-        const res = await fetch(url, {
+        const res = await fetch(getApiLink('user'), {
             method: 'PATCH',
             headers:{ 
                 'Content-Type': 'application/json',

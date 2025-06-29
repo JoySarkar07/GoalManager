@@ -32,6 +32,7 @@ type ViewPortProps = {
   selectedgoal?: any; 
   setSelectedgoal: React.Dispatch<React.SetStateAction<sideBarGoalType|null>>;
   setGoalEdited: React.Dispatch<React.SetStateAction<boolean>>;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 type FilterType = {
@@ -44,7 +45,8 @@ type FilterType = {
 const ViewPort:React.FC<ViewPortProps> = ({
   selectedgoal,
   setSelectedgoal,
-  setGoalEdited
+  setGoalEdited,
+  setLoading
 }) => {
   const [workData, setWorkData] = useState([]);
   const [openBox, setOpenBox] = useState<boolean>(false);
@@ -64,6 +66,7 @@ const ViewPort:React.FC<ViewPortProps> = ({
     const worksData = await getWorks( selectedgoal?._id, filters );
     if(worksData && worksData?.status==='Ok'){
       setWorkData(worksData.data);
+      setLoading(false);
     }
   }
 
@@ -72,6 +75,7 @@ const ViewPort:React.FC<ViewPortProps> = ({
       setWorkData([]);
       return;
     };
+    setLoading(true);
     setGoalInput(selectedgoal.title);
     fetchWorks();
   },[selectedgoal, filters])
@@ -187,7 +191,7 @@ const ViewPort:React.FC<ViewPortProps> = ({
             <PlusButton onPlusClick={ openWorkInputBox } title='Add Work'/>
             <div
               className={`w-[300px] z-10 max-w-sm p-2 bg-white border border-gray-200 rounded-lg shadow-sm sm:p-4 md:p-4 dark:bg-gray-800 dark:border-gray-700 shadow-xl/30 absolute top-10 right-0 transition-transform duration-300 ease-in-out
-                ${openBox ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 pointer-events-none'}`}>
+                ${openBox ? 'translate-x-0 opacity-100' : 'translate-x-full hidden opacity-0 pointer-events-none'}`}>
                 
                 {
                   [{title:"Title", type:"text", id:"title", helperText:"Reading books"}, {title:"Due Date", type:"datetime-local", id:"dueDate", helperText:"07-12-2025"}, {title:"Remainder Time for email", type:"number", id:"emailTime", helperText:"0.5 (means 30 min)"}, {title:"Remainder Time for WebNotification", type:"number", id:"webTime", helperText:"2 (means 2 hour)"}]
@@ -256,7 +260,7 @@ const ViewPort:React.FC<ViewPortProps> = ({
             <input id="default-datepicker" type='datetime-local' value={ filters?.dueDate || '' } onChange={ handleFilterChange } className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date" />
           </div>
         </div>
-        <div className='p-5 m-2 shadow-xl/30 rounded-xl h-[80%] overflow-y-auto'>
+        <div className='p-5 m-2 shadow-xl/30 rounded-xl h-[65%] overflow-y-auto'>
             {
               workData.length===0 && <p>No works to show</p>
             }

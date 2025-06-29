@@ -20,13 +20,15 @@ type GroupsProps = {
     goalData: sideBarGoalType;
     setSelectedgoal: React.Dispatch< React.SetStateAction< sideBarGoalType | null > >;
     setGoalChanged: React.Dispatch< React.SetStateAction< boolean > >;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Groups:React.FC< GroupsProps > = ({
     goals, 
     goalData, 
     setSelectedgoal,
-    setGoalChanged
+    setGoalChanged,
+    setLoading
 }) => {
     const [showgoals, setShowgoals] = useState< boolean >( false );
     const [openEdit, setOpenEdit] = useState< boolean >( false );
@@ -66,10 +68,10 @@ const Groups:React.FC< GroupsProps > = ({
             </div>
         </div>
         <div className='ml-4 relative'>
-            {showgoals && <AddButtonGroups setGoalChanged={ setGoalChanged } groupId={ goalData._id }/>}
+            {showgoals && <AddButtonGroups setGoalChanged={ setGoalChanged } groupId={ goalData._id } setLoading={ setLoading }/>}
             {
                 showgoals && goals?.map((goal, ind)=>{
-                    return goal.isGroup?<Groups key={ind} setSelectedgoal={ setSelectedgoal } goalData={goal} goals={goal.subGoals} setGoalChanged={ setGoalChanged }/>:<Goal key={ind} setSelectedgoal={setSelectedgoal} goalData={goal}/>;
+                    return goal.isGroup?<Groups key={ind} setSelectedgoal={ setSelectedgoal } goalData={goal} goals={goal.subGoals} setGoalChanged={ setGoalChanged } setLoading={ setLoading }/>:<Goal key={ind} setSelectedgoal={setSelectedgoal} goalData={goal}/>;
                 })
             }
         </div>

@@ -6,20 +6,25 @@ import React, { useState } from 'react'
 // Props Types for inputField
 type InputFieldProps = {
     setOpenInput: React.Dispatch<React.SetStateAction<boolean>>;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
     onClick: (inputData:string)=>void;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
   setOpenInput,
+  setLoading,
   onClick
 }) => {
+  console.log({setLoading});
   const [inputData, setInputData] = useState< string >( '' );
   const handelInput = ( e: React.ChangeEvent< HTMLInputElement > )=>{
     setInputData( e.target.value );
   }
   const submitData = ():void=>{
+    setLoading(true);
     setOpenInput(( prev )=> ! prev );
     onClick( inputData );
+    setLoading(false);
   }
   return (
     <div className='absolute z-10 top-7 -left-2 m-1 p-2 flex gap-1 bg-gray-500 rounded-2xl'>

@@ -1,5 +1,5 @@
 import { getToken } from "../auth/userAuth";
-
+import { getApiLink } from "./apiServices";
 
 type LoginDataType = {
     email: string;
@@ -15,9 +15,8 @@ type SignupDataType = {
 }
 
 export const login = async (data:LoginDataType): Promise<any>=>{
-    const url = `http://localhost:3000/api/v1/user/login`;
     try {
-        const res = await fetch(url, {
+        const res = await fetch(getApiLink('user/login'), {
             method:'POST',
             headers: { 
                 'Content-Type': 'application/json',
@@ -33,9 +32,8 @@ export const login = async (data:LoginDataType): Promise<any>=>{
 }
 
 export const signup = async (data:SignupDataType): Promise<any>=>{
-    const url = `http://localhost:3000/api/v1/user/signup`;
     try {
-        const res = await fetch(url, {
+        const res = await fetch(getApiLink('user/signup'), {
             method:'POST',
             headers: { 
                 'Content-Type': 'application/json',
