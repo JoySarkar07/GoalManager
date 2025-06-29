@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "node --watch server.js",
-    "app": "node server.js"
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
