@@ -17,7 +17,7 @@ const v1goalRouter = require('./v1/routes/goalRoutes');
 // initialize an express app
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({origin:'goal-manager-five.vercel.app'}));
 const PORT = process.env.PORT || 3001;
 
 // api/v1 router for users

@@ -3,12 +3,12 @@ import type { UpdateDataType } from "../components/Types";
 
 
 export const getApiLink = (endpoint:string)=>{
-    const debug = true;
+    const debug = false;
     const version = 'v1';
     if(debug){
         return `http://localhost:3000/api/${ version }/${ endpoint }`;
     }
-    return ``;
+    return `https://goalmanager.onrender.com/api/${ version }/${ endpoint }`;
 }
 
 export const deleteGoal = async (groupId: string): Promise<any> => {
