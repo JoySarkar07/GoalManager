@@ -82,11 +82,14 @@ export const createGoal = async ( data:any ): Promise<any> => {
     }
 }
 
-export const getWorks = async ( gaolId:string, filters:any ): Promise<any> => {
+export const getWorks = async ( gaolId:string, filters:any, page:number ): Promise<any> => {
     let url = getApiLink(`goals/${ gaolId }/work`);
+    if(page){
+        url += `?page=${page}`
+    }
     if(filters){
         const queryString = new URLSearchParams( filters ).toString();
-        url += `?${queryString}`;
+        url += `&${queryString}`;
     }
     try {
         const res = await fetch(url,{

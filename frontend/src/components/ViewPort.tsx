@@ -54,6 +54,8 @@ const ViewPort:React.FC<ViewPortProps> = ({
   const user = useRef<any>(userAuth());
   const [goalInput, setGoalInput] = useState<string>(selectedgoal?.title || "");
   const [filters, setFilters] = useState<FilterType>({});
+  const [page, setPage] = useState<number>(1);
+  const [totalWorks, setTotalWorks] = useState<number>(0);
   const [openFilter, setOpenFilter] = useState<boolean>(false);
   const [workInputs, setWorkInputs] = useState<Record<WorkInputKey, string>>({
     title:"",
@@ -61,12 +63,13 @@ const ViewPort:React.FC<ViewPortProps> = ({
     emailTime:"",
     webTime:"",
     priority:"",
-  })
+  });
 
   const fetchWorks = async ()=>{
-    const worksData = await getWorks( selectedgoal?._id, filters );
+    const worksData = await getWorks( selectedgoal?._id, filters, page );
     if(worksData && worksData?.status==='Ok'){
       setWorkData(worksData.data);
+      setTotalWorks(worksData.total);
     }else{
       showToast(worksData.message, worksData.status);
     }
@@ -81,7 +84,7 @@ const ViewPort:React.FC<ViewPortProps> = ({
     setLoading(true);
     setGoalInput(selectedgoal.title);
     fetchWorks();
-  },[selectedgoal, filters])
+  },[selectedgoal, filters, page])
 
   const addWork = async ()=>{
     const inputData = {...workInputs};
@@ -180,7 +183,7 @@ const ViewPort:React.FC<ViewPortProps> = ({
   
   return (
     <>
-      <div className='flex-4/5 flex flex-col body-style'>
+      <div className='flex-4/5 flex flex-col body-style w-[99vw]'>
         <p className='text-center border-b-2 border-b-emerald-300 pb-2 mb-2'>View Port</p>
         <div className='p-5 m-2 shadow-xl/30 rounded-xl font-extralight flex justify-between'>
           <div className='text-2xl '>
@@ -237,7 +240,7 @@ const ViewPort:React.FC<ViewPortProps> = ({
             </div>
           </div>
         </div>
-        <div className='p-5 m-2  md:flex-2/12 shadow-xl/30 rounded-xl font-extralight md:flex gap-2 justify-between items-center'>
+        <div className='p-5 m-2 shadow-xl/30 rounded-xl font-extralight md:flex gap-2 justify-between items-center'>
           <div className='flex gap-1'>
             <button className='cursor-pointer' onClick={()=>{setOpenFilter(prev=>!prev)}}>{openFilter?'🔼':'🔽'}</button>
             <p>{openFilter?'close filter':'open filter'}</p>
@@ -280,6 +283,13 @@ const ViewPort:React.FC<ViewPortProps> = ({
               return <Editor key={ind} data={item} parentGoalId={ selectedgoal?._id } setWorkData={ setWorkData }/>
             })}
         </div>
+        {
+          workData.length > 0 && <div className='flex justify-end gap-2 px-10'>
+                                    <button className='bg-gray-900 p-1 rounded-2xl cursor-pointer' disabled={page==1} onClick={()=>setPage(prev=>prev-1)}>{'<'}</button>
+                                    <span className='bg-gray-900 p-1 rounded-2xl cursor-pointer w-10 text-center'>{page}</span>
+                                    <button className='bg-gray-900 p-1 rounded-2xl cursor-pointer' disabled={totalWorks<10} onClick={()=>setPage(prev=>prev+1)}>{'>'}</button>
+                                  </div>
+        }
       </div>
     </>
   )

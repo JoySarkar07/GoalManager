@@ -1,7 +1,7 @@
 /**
  * External dependencies
 */
-import React,{ useState } from 'react'
+import React,{ useEffect, useState } from 'react'
 
 /**
  * Internal dependencies
@@ -29,10 +29,19 @@ const Editor:React.FC<EditorProps> = ({
     const [openDescription, setOpenDescription] = useState<boolean>(false);
     const [forEdit, setForEdit] = useState<boolean>(false);
     const [inputs, setInputs] = useState<UpdateWorkType>({
-        title: data.title,
-        description: data.description,
-        completed: data.completed
+        title: "",
+        description: "",
+        completed: false
     })
+
+    useEffect(() => {
+        setInputs({
+            title: data.title,
+            description: data.description,
+            completed: data.completed
+        });
+    }, [data])
+    
 
     const openDescriptionTab = ():void => {
         setOpenDescription((prev) => !prev);
